@@ -10,6 +10,8 @@ class DataLoader:
 		self.image_width = image_width
 		self.image_height = image_height
 		self.batch_size = batch_size
+		self.training_data = None
+		self.evaluation_data = None
 
 		self.load_data_paths()
 
@@ -65,21 +67,17 @@ class DataLoader:
 		X = np.stack(X)
 		return X, y, alphabets_to_categories
 
-	# def create_path_batch(self, batch_size, train=True):
-	# 	data_paths = self.train_paths_dictionary if train is True else self.evaluation_paths_dictionary
-	# 	total_classes = sum([len(data_paths[x] for x in data_paths)])
-		
-	# 	y = np.zeros((batch_size, ))
-	# 	y[batch_size//2:] = 1
-
-	# 	selected_classes = np.random.choice(total_classes, size=(batch_size), replalce=False)
-	# 	for i in range(batch_size):
+	def load_data(self, ):
+		self.load_data_paths()
+		self.training_data = self.load_images()
+		self.evaluation_data = self.load_images(train=False)
 
 if __name__ == '__main__':
 	data_path = './../fellowship.ai/omniglot/python'
 	loader = DataLoader(data_path)
-	train_X, train_y, train_alphabets_to_start_end = loader.load_images()
-	test_X, test_y, test_alphabets_to_start_end = loader.load_images(train=False)
+	loader.load_data()
+	train_X, train_y, train_alphabets_to_start_end = loader.training_data
+	test_X, test_y, test_alphabets_to_start_end = loader.evaluation_data
 	from PIL import Image
 	print('X.shape() =', train_X.shape)
 	print('y.shape() =', train_y.shape)
