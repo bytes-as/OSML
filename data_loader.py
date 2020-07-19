@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import imageio
+import pickle
 
 class DataLoader:
 	def __init__(self, data_path, batch_size=10, image_width=105, image_height=105):
@@ -72,16 +73,32 @@ class DataLoader:
 		self.training_data = self.load_images()
 		self.evaluation_data = self.load_images(train=False)
 
+	def store_data(self, path=self.data_path):
+		with open(os.path.join(path, 'training_data.pkl'), 'wb') as writeFile:
+			pickle.dump(self.training_data, writeFile)
+		print('Training Data written : {}'.format(os.path.join(path, 'training_data.pkl')))
+		with open(os.path.join(path, 'evaluation_data.pkl'), 'wb') as writeFile:
+			pickle.dump(self.evaluation_data, writeFile)
+		print('Evaluation Data written : {}'.format(os.path.join(path, 'evaluation_data.pkl')))
+
+
 if __name__ == '__main__':
 	data_path = './../fellowship.ai/omniglot/python'
 	loader = DataLoader(data_path)
 	loader.load_data()
 	train_X, train_y, train_alphabets_to_start_end = loader.training_data
 	test_X, test_y, test_alphabets_to_start_end = loader.evaluation_data
+	loader.store_data()
 	from PIL import Image
 	print('X.shape() =', train_X.shape)
 	print('y.shape() =', train_y.shape)
 	print(train_y[:50])
 	print(train_alphabets_to_start_end)
 	img = Image.fromarray(train_X[0,0,:,:])
-	img.show()
+
+
+	from batch_generator import BatchManager
+	batch_manager = BatchManager(train_X)
+	for (pairs, targets) in batch_manager.generator(10):
+		print(pairs.shape)
+		print(target.shape)
