@@ -73,7 +73,8 @@ class DataLoader:
 		self.training_data = self.load_images()
 		self.evaluation_data = self.load_images(train=False)
 
-	def store_data(self, path=self.data_path):
+	def store_data(self, path=None):
+		if path is None: path = self.data_path
 		with open(os.path.join(path, 'training_data.pkl'), 'wb') as writeFile:
 			pickle.dump(self.training_data, writeFile)
 		print('Training Data written : {}'.format(os.path.join(path, 'training_data.pkl')))
@@ -97,8 +98,12 @@ if __name__ == '__main__':
 	img = Image.fromarray(train_X[0,0,:,:])
 
 
-	from batch_generator import BatchManager
-	batch_manager = BatchManager(train_X)
-	for (pairs, targets) in batch_manager.generator(10):
-		print(pairs.shape)
-		print(target.shape)
+	# from batch_generator import BatchManager
+	# training_batch_manager = BatchManager(loader.training_data)
+	# evaluation_batch_manager = BatchManager(loader.evaluation_data)
+	# for (pairs, targets) in training_batch_manager.generator(5):
+	# 	print(pairs.shape)
+	# 	print(targets.shape)
+	# for (pair, targets) in evaluation_batch_manager.generator(5):
+	# 	print(pairs.shape)
+	# 	print(targets.shape)
