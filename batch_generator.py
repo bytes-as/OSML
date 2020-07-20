@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.utils import shuffle
+# from sklearn.utils import shuffle
 
 class BatchManager:
 	def __init__(self, loaded_data):
@@ -7,7 +7,7 @@ class BatchManager:
 		self.height = 105
 		(self.X, self.y, self.categories) = loaded_data
 		
-	def get_batch(self, batch_size=1000):
+	def get_batch(self, batch_size=30):
 		classes, items_per_class, width, height = self.X.shape
 		chosen_categories = np.random.choice(classes, size=(batch_size, ), replace=False)
 
@@ -34,20 +34,20 @@ class BatchManager:
 			yield (pairs, targets)
 
 	def get_test_batch(self, batch_size):
+		indices = np.random.randint(low=0, high=20, size=(batch_size, ))
 		classes, items_per_class, width, height = self.X.shape
-		indices = np.random.randin(0, items_per_class, size=(batch_size, ))
 		chosen_categories = np.random.choice(range(classes), size=(batch_size, ), replace=False)
 		true_category = chosen_categories[0]
 		item1, item2 = np.random.choice(items_per_class, size=(2, ), replace=False)
 		# create N copies for the true category item for evaluation in 'batch_size' way
 		test_image = np.asarray([self.X[true_category, item1, : , :]] * batch_size).reshape( \
 			batch_size, width, height, 1)
-		suuport_images = X[chosen_categories, indices, :, :]
-		support_images[0, :, :] = X[true_category, item2]
+		support_images = self.X[chosen_categories, indices, :, :]
+		support_images[0, :, :] = self.X[true_category, item2]
 		support_images = support_images.reshape(batch_size, self.width, self.height, 1)
-		targets = np.zeros(size(batch_size, ))
+		targets = np.zeros((batch_size, ))
 		targets[0] = 1
-		targets, test_image, support_images = shuffle(targets, test_image, support_images)
+		# targets, test_image, support_images = shuffle(targets, test_image, support_images)
 		pairs = [test_image, support_images]
 		return pairs, targets
 
